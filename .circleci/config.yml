@@ -85,7 +85,7 @@ jobs:
           elif [ "${CIRCLE_BRANCH}" == "develop" ]; then
               aws --region eu-west-2 s3 sync build/ s3://dev.docs.molofinance.com/ --delete
               aws configure set preview.cloudfront true
-              aws cloudfront create-invalidation --distribution-id E30OO5XI68D01T --paths '/*'
+              aws cloudfront create-invalidation --distribution-id EEGJ6DEZI83LH --paths '/*'
           fi
 
 workflows:
