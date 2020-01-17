@@ -8,8 +8,7 @@ language_tabs: # must be one of https://git.io/vQNgJ
   - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
+  - <a href='https://molofinance.com/'>molofinance.com</a>
 
 includes:
   - errors
@@ -110,10 +109,10 @@ Starling’s "2-way" OAuth flow requires that we can perform as either side of a
 These individual flows are standard looking and so long as we don’t wire their endpoints together too tightly, they should be reusable for future partners who require OAuth.
 I will not detail these OAuth endpoints here.
 
-# Architecture 
+# Architecture
 
 Certification: Public certificate (.crt file)
-Authentication: 
+Authentication:
   - OAuth2.0 with Starling
-  - Client secret JWT for non customer auth journey. 
+  - Client secret JWT for non customer auth journey.
 API Gateway: AWS API Gateway
