@@ -3,9 +3,7 @@ title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
   - python
-  - javascript
 
 toc_footers:
   - <a href='https://molofinance.com/'>molofinance.com</a>
@@ -28,91 +26,80 @@ The Molo API implements OAuth 2.0 to allow users to log in to applications witho
 - Use the access token to make authenticated requests
 - If you were issued a refresh token: refresh the access token when it expires
 
+[//]: # (We don't currently support this endpoint, this is here for completeness sake. Uncomment later.)
+[//]: # (##Acquiring an authorization code:)
+[//]: # (Send a `GET` request to our authorize endpoint to recieve an authorization code which you can then exchange for an access token.)
 
-Acquiring an access token: _Process to be defined_
+[//]: # (> `https://oauth.molofinance.com/authorize/?state=<STATE>&response_type=code&client_id=<CLIENT_ID>`)
+
+[//]: # (> Where `STATE` is your state)
+[//]: # (> and `CLIENT_ID` is the ID that Molo has issued you)
+
+[//]: # (```shell)
+[//]: # (curl -X GET \)
+[//]: # (  'https://oauth.molofinance.com/authorize/?state=%3CSTATE%3E&response_type=code&client_id=%3CCLIENT_ID%3E' \)
+[//]: # (  -H 'Postman-Token: 08292e87-c21e-4d93-a49b-43f92c859ccf' \)
+[//]: # (  -H 'cache-control: no-cache')
+[//]: # (```)
 
 
-# API
+## Exchange an authorization code for an access token:
 
-> Endpoints which Starling will use to request data:
+Send a `POST` request to our token endpoint to exchange an authorization code for an access token
+https://oauth.molofinance.com/token/
 
-> (Assumption that the user token is passed every time that contains the customer identifier)
+> Using http basic auth in the headers, use your `client_id` as the username and your `client_secret`
+
+> then post the following payload as x-www-form-urlencoded data:
+
+```
+code:<AUTH_CODE>
+grant_type:authorization_code
+redirect_uri:<REDIRECT_URI>
+```
+
 
 ```shell
-GET	/v1/applications/
-
-Response:
+curl -X POST \
+  https://oauth.molofinance.com/token/ \
+  -H 'Accept: */*' \
+  -H 'Authorization: Basic d1QxWHJ3Q1hHdHJPbmY4WnBBc1R4MW5YQzdsd3hYVVZncmdkZG1ycTozMnd6Rnh1amZvSVk5emowbjY4TkxNWXdEQUhUY0lBVzVBVk0zU1NheTZPUXJtMkxzS0ZIbVRZUHllb2xZcFpZTzE5Mnk1TVgyaTNaazVvVGp1cDlXQkZKUGR0ZHFGdUtHRGtHNlBzUkNWVzB4TURGaTRYeG5DTDRXbmtkc01NVQ==' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Host: oauth.molofinance.com' \
+  -d 'code=6Kl461qi2CAtRchWZabDovT3FuOzg2&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdeveloper-sandbox.website.com%2Foauth-redirect%2Fmolofinance'
 ```
+
+# API
+The Molo partner API can be used by any partner who has obtained an access token.
+You can access these endpoints by using the `bearer token` authentication header and entering this token as the value.
+
+## Mortgage applications
+Send a GET request to https://partner.molofinance.com/v1/applications/ to see a list of current applications for a user
+
+```shell
+curl -X GET \
+  https://partner.molofinance.com/v1/applications/ \
+  -H 'Authorization: Bearer <ACCESS TOKEN>' \
+  -H 'cache-control: no-cache'
+
+
+```
+> Expected response
+
 ```json
 [
   {
-    "application_id": 123,
-    "application_type": "individual",
+    "id": 123,
     "status": "running_loan",
-    "loan_amount": 200000,
-    "current_loan_amount": "None",
+    "status_display": "Running Loan",
+    "application_type": "remortgage_current",
+    "application_type_display": "remortgage current balance",
+    "desired_loan_amount": 200000,
+    "outstanding_balance": 170000,
   },
   {
-    "application_id": 456,
+    "id": 456,
     …
   }
 ]
 ```
-```
-GET	/v1/applications/current/
-
-Response:
-```
-```json
-[
-  {
-    "application_id": 123,
-    "application_type": "individual",
-    "status": "running_loan",
-    "loan_amount": 200000,
-    "current_loan_amount": "None",
-  }
-]
-```
-
-```
-GET	/v1/applications/<id>/
-
-Response:
-```
-```json
-[
-  {
-    "application_id": 123,
-    "application_type": "individual",
-    "status": "running_loan",
-    "loan_amount": 200000,
-    "current_loan_amount": "None",
-  }
-]
-```
-
-```
-TODO DIP (To be used with Mojo)
-```
-
-> Postman collection examples?
-
-`(To be used with starling)`
-
-Proposed implementation:
-Our API will live on a separate subdomain. Name TBC, here we’ll just call it `partner-api.molofinance.com`
-
-We will, of course, version it.
-
-Starling’s "2-way" OAuth flow requires that we can perform as either side of a standard OAuth flow. That is to say, it is just 2 separate OAuth implementations, one which acts as a client and one which acts as an Identity Provider.
-These individual flows are standard looking and so long as we don’t wire their endpoints together too tightly, they should be reusable for future partners who require OAuth.
-I will not detail these OAuth endpoints here.
-
-# Architecture
-
-Certification: Public certificate (.crt file)
-Authentication:
-  - OAuth2.0 with Starling
-  - Client secret JWT for non customer auth journey.
-API Gateway: AWS API Gateway
