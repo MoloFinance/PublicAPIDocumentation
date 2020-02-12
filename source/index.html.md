@@ -62,11 +62,8 @@ curl -X POST \
       grant_type=authorization_code&
       redirect_uri=https%3A%2F%2Fdeveloper-sandbox.website.com%2Foauth-redirect%2Fmolofinance'
 ```
-Send a `POST` request to our token endpoint to exchange an authorization code for an access token
+**Send a `POST` request to our token endpoint to exchange an authorization code for an access token**
 https://oauth.molofinance.com/token/
-
-
-
 
 
 
@@ -74,97 +71,172 @@ https://oauth.molofinance.com/token/
 The Molo partner API can be used by any partner who has obtained an access token.
 You can access these endpoints by using the `bearer token` authentication header and entering this token as the value.
 
-## Request decision in principal
+
+## Create an application
 ```shell
-curl -X POST \
-  https://partner.molofinance.com/request_dip/ \
-  -H 'Accept: */*' \
-  -H 'Authorization: <BASIC_AUTH_HEADER_CODE>' \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'borrower_type=individual_borrower&customers=%5B%7B%22email%22%3A%22whatever%40thing.com%22%2C%20%22title%22%3A%22stuff%22%7D%2C%20%7B%22email%22%3A%20%22another%40one.com%22%2C%20%22title%22%3A%20%22mr%22%7D%5D&desired_loan_amount=200000&monthly_rent=2000&mortgage_type=new_purchase&property_value=500000&loan_term=15&is_uk_resident=true&is_bankrupt=false&is_investment=false&btl_mortgages_count=2'
+curl
 ```
-
-If you are a broker, you can request a decision in principal (DIP) on behalf of your customer.
-NB: This will include running a soft credit check on your customer.
-
+**Send a `POST` request to https://partner.molofinance.com/v1/applications/ to create a new application.**
 You will need to provide the following parameters:
 
-- `borrower_type` The type of borrower, a choice of:
-  - "individual_borrower"
-  - "ltd_company"
-- `consents` **(Can we assume consent here, or will Mojo need to explicitely pass it to us?)**
-- `customers` This is a list of customer objects, one for each applicant. These objects consist of:
-    - `taxable_income` A decimal value with 2 decimal places. This value is presumed to be in GBP
-    - `email` The customer's email address
-    - `title` The customer's title, one of **(Do we really need this?)**
-        - "mr"
-        - "mx"
-        - "mrs"
-        - "miss"
-        - "ms"
-        - "sir"
-        - "dr"
-        - "lady"
-        - "lord"
-        - "other"
-    - `first_name` The customer's first name
-    - `last_name` The customer's last_name
-    - `date_of_birth` The customer's date of birth, in ISO 8601 format (yyyy-mm-dd)
-    - `mobile` The customer's mobile number in the form "+441615676878"
-    - `address` An address object representing the customer's address, in the form:
-        - `address_type` The customer's address type, a choice of:
-            - "current"
-            - "previous"
-        - `country_iso` The ISO code for the country
-        - `street` The street name
-        - `building_number` The building number
-        - `building_name` The building name
-        - `sub_building_name` The sub-building name
-        - `postal` The post code
-        - `town` The town
-        - `start_month` The month the customer moved into this address
-        - `start_year` The year the customer moved into this address
-        - `end_month` The month the customer moved out of this address
-        - `end_year` The year the customer moved out of this address
-  - `desired_loan_amount` A decimal value with 2 decimal places. This value is presumed to be in GBP
-  - `monthly_rent` A decimal value with 2 decimal places. This value is presumed to be in GBP
-  - `mortgage_type` The type of mortgage the customer wants. A choice of:
+- `property_value` A decimal value with 2 decimal places. This value is presumed to be in GBP
+- `monthly_rent` A decimal value with 2 decimal places. This value is presumed to be in GBP
+- `desired_loan_amount` A decimal value with 2 decimal places. This value is presumed to be in GBP
+- `loan_term` An integer number of years
+- `mortgage_type` The type of mortgage the customer wants. A choice of:
     - "new_purchase"
     - "remortgage_current"
     - "remortgage_and_borrow"
-  - `property_value` A decimal value with 2 decimal places. This value is presumed to be in GBP
-  - `loan_term` An integer number of years
-  - `is_uk_resident` Has the customer been a UK resident for at least 3 years, boolean
-  - `is_bankrupt` Has the customer been bankrupt in the last 6 years, boolean
-  - `is_investment` Is the property for investing purposed? boolean
-  - `btl_mortgages_count` How many other buy-to-let mortgages does the customer already have?
+- `borrower_type` The type of borrower, a choice of:
+    - "individual_borrower"
+    - "ltd_company"
 
-## Mortgage applications
+**Send a `PATCH` request to https://partner.molofinance.com/v1/applications/{pk}/ to update an application.**
+- RESPONSE AND FIELDS TBC
+
+**Send a `GET` request to https://partner.molofinance.com/v1/applications/ to retrieve a list of past applications.**
+- RESPONSE TBC
+
+**Send a `GET` request to https://partner.molofinance.com/v1/applications/{pk}/ to retrieve details of a specific application.**
+- RESPONSE TBC
+
+
+## Create an applicant
 ```shell
-curl -X GET \
-  https://partner.molofinance.com/v1/applications/ \
-  -H 'Authorization: Bearer <ACCESS TOKEN>' \
-  -H 'cache-control: no-cache'
-
-
+curl
 ```
-> Expected response
+**Send a `POST` request to https://partner.molofinance.com/v1/applicants/ to create a new applicant.**
+You will need to provide the following parameters:
 
-```json
-[
-  {
-    "id": 123,
-    "status": "running_loan",
-    "status_display": "Running Loan",
-    "application_type": "remortgage_current",
-    "application_type_display": "remortgage current balance",
-    "desired_loan_amount": 200000,
-    "outstanding_balance": 170000,
-  },
-  {
-    "id": 456,
-    …
-  }
-]
+- `application_id` The ID of the application this applicant should be attached to.
+- `is_lead` Is this applicant the lead applicant on this application? Each application requires one and only one lead applicant. A boolean
+- `taxable_income` A decimal value with 2 decimal places. This value is presumed to be in GBP
+- `email` The customer's email address
+- `title` The customer's title, one of **(Do we really need this?)**
+    - "mr"
+    - "mx"
+    - "mrs"
+    - "miss"
+    - "ms"
+    - "sir"
+    - "dr"
+    - "lady"
+    - "lord"
+    - "other"
+- `first_name` The customer's first name
+- `middle_name` The customer's middle name
+- `last_name` The customer's last name
+- `date_of_birth` The customer's date of birth, in ISO 8601 format (yyyy-mm-dd)
+- `mobile` The customer's mobile number in the form "+441615676878"
+- `address` An address object representing the customer's address, in the form:
+    - `address_type` The customer's address type, a choice of:
+        - "current"
+        - "previous"
+    - `country_iso` The ISO code for the country
+    - `street` The street name
+    - `building_number` The building number
+    - `building_name` The building name
+    - `sub_building_name` The sub-building name
+    - `postal` The post code
+    - `town` The town
+    - `start_month` The month the customer moved into this address
+    - `start_year` The year the customer moved into this address
+    - `end_month` The month the customer moved out of this address
+    - `end_year` The year the customer moved out of this address
+- `is_uk_resident` Has the customer been a UK resident for at least 3 years, boolean
+- `is_bankrupt` Has the customer been bankrupt in the last 6 years, boolean
+- `is_investment` Is the property for investing purposed? boolean
+- `btl_mortgages_count` How many other buy-to-let mortgages does the customer already have?
+- `is_ltd_personal_guarantee` Is the customer providing a personal guarantee on behalf of their limited company. Boolean
+
+**Send a `PATCH` request to https://partner.molofinance.com/v1/applicants/{pk}/ a update an applicant.**
+- RESPONSE AND FIELDS TBC
+
+**Send a `GET` request to https://partner.molofinance.com/v1/applicants/ to retrieve a list of applicants.**
+- RESPONSE TBC
+- DO WE NEED THIS?
+
+**Send a `GET` request to https://partner.molofinance.com/v1/applicants/{pk}/ to retrieve a specific applicant.**
+- RESPONSE TBC
+
+**Send a `DELETE` request to https://partner.molofinance.com/v1/applicants/{pk}/ to delete a specific applicant.**
+- RESPONSE TBC
+
+
+## Get a decision in principal
+```shell
+curl
 ```
-Send a GET request to https://partner.molofinance.com/v1/applications/ to see a list of current applications for a user
+**Send a `POST` request to https://partner.molofinance.com/v1/applications/{pk}/get-dip/ to get a decision in principal.**
+There are no fields to send.
+The response will be in the form:
+
+- `dip_agreed` Whether Molo can give you a decision in principal. A boolean.
+- `link_to_dip` A link to the DIP itself so that it can be downloaded.
+- `rejection_reason` If Molo cannot offer a DIP, we will give you a reason why not.
+
+
+## Get relevant products
+```shell
+curl
+```
+**Send a `GET` request to https://partner.molofinance.com/v1/applications/{pk}/relevant-products/ to retrieve a list of relevant products.**
+
+The response will be in the form:
+
+- `id` The ID of the product
+- `name` The name of the product
+- `rate_type` The type of rate on this mortgage. One of:
+    - "tracker"
+    - "fixed"
+- `code` The product code
+- `ltv` The loan-to-value required for this product
+- `initial_monthly_repayment` The initial monthly repayment, a decimal value in GBP
+- `product_fee` The product fee, a decimal value in GBP
+- `fixation_period` An integer number of years that this interest is fixed for.
+- `reversion_rate` The reversion rate
+- `initial_rate` The initial rate
+- `aprc` The APRC of this product
+- `valuation_fee` The valuation fee on this product
+- `true_cost_of_product` The true cost of this product
+- `mortgage_type` The type of this mortgage, one of:
+    - "new_purchase"
+    - "remortgage_current"
+    - "remortgage_and_borrow"
+- `borrower_type` The type of borrower for this product, one of:
+    - "individual_borrower"
+    - "ltd_company"
+
+
+**Send a `GET` request to https://partner.molofinance.com/v1/applications/{pk}/relevant-products/{pk} to retrieve details of a specific product.**
+
+The response will be in the form:
+
+- `id` The ID of the product
+- `name` The name of the product
+- `initial_rate` The initial rate
+- `rate_type` The type of rate on this mortgage. One of:
+    - "tracker"
+    - "fixed"
+- `fixation_period` An integer number of years that this interest is fixed for.
+- `reversion_rate` The reversion rate
+- `reversion_spread`
+- `reversion_base_rate_type`
+- `loan`
+- `loan_term`
+- `initial_monthly_repayment` The initial monthly repayment, a decimal value in GBP
+- `followed_by_monthly_repayment`
+- `total_amount_to_be_repaid`
+- `total_interest_payable`
+- `aprc` The APRC of this product
+- `true_cost_of_product` The true cost of this product
+- `product_fee` The product fee, a decimal value in GBP
+- `valuation_fee` The valuation fee on this product
+- `legal_fees`
+- `overpayment_allowance`
+- `first_year_early_repayment_fee`
+- `second_year_early_repayment_fee`
+- `third_year_early_repayment_fee`
+- `fourth_year_early_repayment_fee`
+- `fifth_year_early_repayment_fee`
+- `mortgage_exit_administration_fee`
