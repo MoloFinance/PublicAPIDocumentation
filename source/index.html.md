@@ -2,7 +2,7 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
+  - shell: cURL
 
 toc_footers:
   - <a href='https://molofinance.com/'>molofinance.com</a>
@@ -47,23 +47,114 @@ The Molo API implements OAuth 2.0 to allow users to log in to applications witho
 
 > then post the following payload as x-www-form-urlencoded data:
 
+```json
+{
+    "code": <AUTH_CODE>,
+    "grant_type": "authorization_code",
+    "redirect_uri": <REDIRECT_URI>,
+}
 ```
-code:<AUTH_CODE>
-grant_type:authorization_code
-redirect_uri:<REDIRECT_URI>
-```
+
+
 ```shell
 curl -X POST \
   https://oauth.molofinance.com/token/ \
   -H 'Accept: */*' \
-  -H 'Authorization: <BASIC_AUTH_HEADER_CODE>' \
+  -H 'Authorization: <HTTP_BASIC_AUTH_HEADER>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'code=6Kl461qi2CAtRchWZabDovT3FuOzg2&
-      grant_type=authorization_code&
-      redirect_uri=https%3A%2F%2Fdeveloper-sandbox.website.com%2Foauth-redirect%2Fmolofinance'
+  -H 'Host: oauth.molofinance.com' \
+  -d 'code=<AUTH_CODE>&' \
+     'grant_type=authorization_code&' \
+     'redirect_uri=<REDIRECT_URI>'
+```
+
+> **Expected response: Status 200**
+
+```json
+{
+    "access_token": <ACCESS_TOKEN>,
+    "expires_in": 36000,
+    "token_type": "Bearer",
+    "scope": "read write",
+    "refresh_token": <REFRESH_TOKEN>,
+}
+```
+
+Send a `POST` request to our token endpoint to exchange an authorization code for an access token
+https://oauth.molofinance.com/token/
+
+
+## Refresh an access token:
+> Using http basic auth in the headers, use your `client_id` as the username and your `client_secret`
+
+> then post the following payload as x-www-form-urlencoded data:
+
+```json
+{
+    "refresh_token":<REFRESH_TOKEN>,
+    "grant_type":"refresh_token",
+}
+```
+
+```shell
+curl -X POST \
+  http://oauth.molofinance.com/token/ \
+  -H 'Accept: */*' \
+  -H 'Authorization: <HTTP_BASIC_AUTH_HEADER>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Host: oauth.molofinance.com' \
+  -d 'refresh_token=<REFRESH_TOKEN>&' \
+     'grant_type=refresh_token'
+```
+
+> **Expected response: Status 200**
+
+```json
+{
+    "access_token": <NEW_ACCESS_TOKEN>,
+    "expires_in": 36000,
+    "token_type": "Bearer",
+    "scope": "read write",
+    "refresh_token": <NEW_REFRESH_TOKEN>
+}
+```
+
+Send a `POST` request to our token endpoint to refresh an access token
+https://oauth.molofinance.com/token/
+
+
+## Revoke an access token:
+> Using http basic auth in the headers, use your `client_id` as the username and your `client_secret`
+
+> then post the following payload as x-www-form-urlencoded data:
+
+```json
+{
+    "token": <TOKEN>,
+    "token_type_hint": ["access_token"|"refresh_token"],
+}
+```
+
+```shell
+curl -X POST \
+  http://oauth.molofinance.com/revoke_token/ \
+  -H 'Accept: */*' \
+  -H 'Authorization: <HTTP_BASIC_AUTH_HEADER>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Host: oauth.molofinance.com' \
+  -d 'token=<TOKEN>&' \
+     'token_type_hint=refresh_token'
 ```
 **Send a `POST` request to our token endpoint to exchange an authorization code for an access token**
 https://oauth.molofinance.com/token/
+
+
+
+> **Expected response: Status 200**
+
+Send a `POST` request to our revoke token endpoint to revoke a token.
+
+https://oauth.molofinance.com/revoke_token/
 
 
 
@@ -73,9 +164,32 @@ You can access these endpoints by using the `bearer token` authentication header
 
 
 ## Create an application
+
 ```shell
 curl
 ```
+
+> **Expected response: Status 200**
+
+```json
+[
+  {
+    "id": 123,
+    "status": "running_loan",
+    "status_display": "Running Loan",
+    "application_type": "remortgage_current",
+    "application_type_display": "remortgage current balance",
+    "desired_loan_amount": 200000,
+    "outstanding_balance": 170000,
+  },
+  {
+    "id": 456,
+    …
+  }
+]
+```
+Send a GET request to https://partner.molofinance.com/v1/applications/ to see a list of current applications for a user
+
 **Send a `POST` request to https://partner.molofinance.com/v1/applications/ to create a new application.**
 You will need to provide the following parameters:
 
@@ -99,6 +213,8 @@ You will need to provide the following parameters:
 
 **Send a `GET` request to https://partner.molofinance.com/v1/applications/{pk}/ to retrieve details of a specific application.**
 - RESPONSE TBC
+
+
 
 
 ## Create an applicant
@@ -167,6 +283,7 @@ You will need to provide the following parameters:
 ```shell
 curl
 ```
+
 **Send a `POST` request to https://partner.molofinance.com/v1/applications/{pk}/get-dip/ to get a decision in principal.**
 There are no fields to send.
 The response will be in the form:
