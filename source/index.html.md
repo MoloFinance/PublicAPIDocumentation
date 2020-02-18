@@ -193,10 +193,10 @@ Send a GET request to https://partner.molofinance.com/v1/applications/ to see a 
 **Send a `POST` request to https://partner.molofinance.com/v1/applications/ to create a new application.**
 You will need to provide the following parameters:
 
-- `property_value` A decimal value with 2 decimal places. This value is presumed to be in GBP
-- `monthly_rent` A decimal value with 2 decimal places. This value is presumed to be in GBP
-- `desired_loan_amount` A decimal value with 2 decimal places. This value is presumed to be in GBP
-- `loan_term` An integer number of years
+- `property_value` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `monthly_rent` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `desired_loan_amount` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `loan_term` An integer number of years.
 - `mortgage_type` The type of mortgage the customer wants. A choice of:
     - "new_purchase"
     - "remortgage_current"
@@ -225,9 +225,9 @@ curl
 You will need to provide the following parameters:
 
 - `application_id` The ID of the application this applicant should be attached to.
-- `is_lead` Is this applicant the lead applicant on this application? Each application requires one and only one lead applicant. A boolean
-- `taxable_income` A decimal value with 2 decimal places. This value is presumed to be in GBP
-- `email` The customer's email address
+- `is_lead` Is this applicant the lead applicant on this application? Each application requires one and only one lead applicant. A boolean.
+- `taxable_income` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `email` The customer's email address.
 - `title` The customer's title, one of **(Do we really need this?)**
     - "mr"
     - "mx"
@@ -244,10 +244,7 @@ You will need to provide the following parameters:
 - `last_name` The customer's last name
 - `date_of_birth` The customer's date of birth, in ISO 8601 format (yyyy-mm-dd)
 - `mobile` The customer's mobile number in the form "+441615676878"
-- `address` An address object representing the customer's address, in the form:
-    - `address_type` The customer's address type, a choice of:
-        - "current"
-        - "previous"
+- `address` An address object representing the customer's current address, in the form:
     - `country_iso` The ISO code for the country
     - `street` The street name
     - `building_number` The building number
@@ -259,11 +256,11 @@ You will need to provide the following parameters:
     - `start_year` The year the customer moved into this address
     - `end_month` The month the customer moved out of this address
     - `end_year` The year the customer moved out of this address
-- `is_uk_resident` Has the customer been a UK resident for at least 3 years, boolean
-- `is_bankrupt` Has the customer been bankrupt in the last 6 years, boolean
-- `is_investment` Is the property for investing purposed? boolean
+- `is_uk_resident` Has the customer been a UK resident for at least 3 years, a boolean.
+- `is_bankrupt` Has the customer been bankrupt in the last 6 years, a boolean.
+- `is_investment` Is the property for investing purposed? a boolean.
 - `btl_mortgages_count` How many other buy-to-let mortgages does the customer already have?
-- `is_ltd_personal_guarantee` Is the customer providing a personal guarantee on behalf of their limited company. Boolean
+- `is_ltd_personal_guarantee` Is the customer providing a personal guarantee on behalf of their limited company. A boolean.
 
 **Send a `PATCH` request to https://partner.molofinance.com/v1/applicants/{pk}/ a update an applicant.**
 - RESPONSE AND FIELDS TBC
