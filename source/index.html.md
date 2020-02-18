@@ -2,8 +2,7 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - python
+  - shell: cURL
 
 toc_footers:
   - <a href='https://molofinance.com/'>molofinance.com</a>
@@ -44,18 +43,16 @@ The Molo API implements OAuth 2.0 to allow users to log in to applications witho
 
 
 ## Exchange an authorization code for an access token:
-
-Send a `POST` request to our token endpoint to exchange an authorization code for an access token
-https://oauth.molofinance.com/token/
-
 > Using http basic auth in the headers, use your `client_id` as the username and your `client_secret`
 
 > then post the following payload as x-www-form-urlencoded data:
 
-```
-code:<AUTH_CODE>
-grant_type:authorization_code
-redirect_uri:<REDIRECT_URI>
+```json
+{
+    "code": <AUTH_CODE>,
+    "grant_type": "authorization_code",
+    "redirect_uri": <REDIRECT_URI>,
+}
 ```
 
 
@@ -63,19 +60,105 @@ redirect_uri:<REDIRECT_URI>
 curl -X POST \
   https://oauth.molofinance.com/token/ \
   -H 'Accept: */*' \
-  -H 'Authorization: Basic d1QxWHJ3Q1hHdHJPbmY4WnBBc1R4MW5YQzdsd3hYVVZncmdkZG1ycTozMnd6Rnh1amZvSVk5emowbjY4TkxNWXdEQUhUY0lBVzVBVk0zU1NheTZPUXJtMkxzS0ZIbVRZUHllb2xZcFpZTzE5Mnk1TVgyaTNaazVvVGp1cDlXQkZKUGR0ZHFGdUtHRGtHNlBzUkNWVzB4TURGaTRYeG5DTDRXbmtkc01NVQ==' \
+  -H 'Authorization: <HTTP_BASIC_AUTH_HEADER>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H 'Host: oauth.molofinance.com' \
-  -d 'code=6Kl461qi2CAtRchWZabDovT3FuOzg2&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdeveloper-sandbox.website.com%2Foauth-redirect%2Fmolofinance'
+  -d 'code=<AUTH_CODE>&' \
+     'grant_type=authorization_code&' \
+     'redirect_uri=<REDIRECT_URI>'
 ```
+
+> **Expected response: Status 200**
+
+```json
+{
+    "access_token": <ACCESS_TOKEN>,
+    "expires_in": 36000,
+    "token_type": "Bearer",
+    "scope": "read write",
+    "refresh_token": <REFRESH_TOKEN>,
+}
+```
+
+Send a `POST` request to our token endpoint to exchange an authorization code for an access token
+https://oauth.molofinance.com/token/
+
+
+## Refresh an access token:
+> Using http basic auth in the headers, use your `client_id` as the username and your `client_secret`
+
+> then post the following payload as x-www-form-urlencoded data:
+
+```json
+{
+    "refresh_token":<REFRESH_TOKEN>,
+    "grant_type":"refresh_token",
+}
+```
+
+```shell
+curl -X POST \
+  http://oauth.molofinance.com/token/ \
+  -H 'Accept: */*' \
+  -H 'Authorization: <HTTP_BASIC_AUTH_HEADER>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Host: oauth.molofinance.com' \
+  -d 'refresh_token=<REFRESH_TOKEN>&' \
+     'grant_type=refresh_token'
+```
+
+> **Expected response: Status 200**
+
+```json
+{
+    "access_token": <NEW_ACCESS_TOKEN>,
+    "expires_in": 36000,
+    "token_type": "Bearer",
+    "scope": "read write",
+    "refresh_token": <NEW_REFRESH_TOKEN>
+}
+```
+Send a `POST` request to our token endpoint to refresh an access token
+https://oauth.molofinance.com/token/
+
+
+## Revoke an access token:
+> Using http basic auth in the headers, use your `client_id` as the username and your `client_secret`
+
+> then post the following payload as x-www-form-urlencoded data:
+
+```json
+{
+    "token": <TOKEN>,
+    "token_type_hint": ["access_token"|"refresh_token"],
+}
+```
+
+```shell
+curl -X POST \
+  http://oauth.molofinance.com/revoke_token/ \
+  -H 'Accept: */*' \
+  -H 'Authorization: <HTTP_BASIC_AUTH_HEADER>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Host: oauth.molofinance.com' \
+  -d 'token=<TOKEN>&' \
+     'token_type_hint=refresh_token'
+```
+
+> **Expected response: Status 200**
+
+Send a `POST` request to our revoke token endpoint to revoke a token.
+
+https://oauth.molofinance.com/revoke_token/
+
+
+
 
 # API
 The Molo partner API can be used by any partner who has obtained an access token.
 You can access these endpoints by using the `bearer token` authentication header and entering this token as the value.
 
 ## Mortgage applications
-Send a GET request to https://partner.molofinance.com/v1/applications/ to see a list of current applications for a user
-
 ```shell
 curl -X GET \
   https://partner.molofinance.com/v1/applications/ \
@@ -84,7 +167,7 @@ curl -X GET \
 
 
 ```
-> Expected response
+> **Expected response: Status 200**
 
 ```json
 [
@@ -103,3 +186,4 @@ curl -X GET \
   }
 ]
 ```
+Send a GET request to https://partner.molofinance.com/v1/applications/ to see a list of current applications for a user
