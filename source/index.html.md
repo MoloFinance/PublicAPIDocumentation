@@ -526,7 +526,7 @@ You will need to provide the following parameters:
 - `is_lead` Is this applicant the lead applicant on this application? Each application requires one and only one lead applicant. A boolean.
 - `taxable_income` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
 - `email` The customer's email address.
-- `title` The customer's title, one of **(Do we really need this?)**
+- `title` The customer's title, one of:
     - "mr"
     - "mx"
     - "mrs"
