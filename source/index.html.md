@@ -209,6 +209,7 @@ You will need to provide the following parameters:
 - `borrower_type` The type of borrower, a choice of:
     - "individual_borrower"
     - "ltd_company"
+- `dip_consent` A boolean, you must send "true" to create a new application
 
 
 ## Update an application
@@ -505,6 +506,7 @@ curl -X POST \
                 '"postal": "NW1 1AL",' \
                 '"town": "London"' \
             '}',
+            '"privacy_policy_accepted": "true",'
        '}'
 ```
 
@@ -549,6 +551,7 @@ You will need to provide the following parameters:
     - `sub_building_name` The sub-building name
     - `postal` The post code
     - `town` The town
+- `privacy_policy_accepted` A boolean, you must send "true" to create a new applicant
 
 
 ## Partial update an applicant
