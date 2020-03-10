@@ -353,7 +353,7 @@ curl -X POST \
 
 [https://partner.molofinance.com/api/v1/applications/{pk}/get-dip/](https://partner.molofinance.com/api/v1/applications/{pk}/get-dip/)
 
-You must send a the parameter:
+You must send the parameter:
 
 - `dip_consent` A boolean, you must send "true" to get a dip
 
@@ -685,7 +685,7 @@ curl -X DELETE \
     -H 'Content-Type: application/json' \
 ```
 
-> **Expected response: Status 200**
+> **Expected response: Status 204**
 
 **Send a `DELETE` request to our applicants endpoint to delete a specific applicant.**
 
