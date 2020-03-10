@@ -209,7 +209,6 @@ You will need to provide the following parameters:
 - `borrower_type` The type of borrower, a choice of:
     - "individual_borrower"
     - "ltd_company"
-- `dip_consent` A boolean, you must send "true" to create a new application
 
 
 ## Update an application
@@ -337,6 +336,9 @@ curl -X POST \
     -H 'Authorization: Bearer <TOKEN>' \
     -H 'Content-Type: application/json' \
     -H 'Host: partner.molofinance.com' \
+    -d '{' \
+            '"dip_consent": "true"', \
+       '}'
 ```
 
 > **Expected response: Status 200**
@@ -351,7 +353,10 @@ curl -X POST \
 
 [https://partner.molofinance.com/api/v1/applications/{pk}/get-dip/](https://partner.molofinance.com/api/v1/applications/{pk}/get-dip/)
 
-There are no fields to send.
+You must send a the parameter:
+
+- `dip_consent` A boolean, you must send "true" to get a dip
+
 The response will be in the form:
 
 - `dip_agreed` Whether Molo can give you a decision in principal. A boolean.
