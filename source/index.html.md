@@ -337,7 +337,7 @@ curl -X POST \
     -H 'Content-Type: application/json' \
     -H 'Host: partner.molofinance.com' \
     -d '{' \
-            '"dip_consent": "true"', \
+            '"allow_soft_credit_search": "true"', \
        '}'
 ```
 
@@ -355,7 +355,7 @@ curl -X POST \
 
 You must send the parameter:
 
-- `dip_consent` A boolean, you must send "true" to get a dip
+- `allow_soft_credit_search` A boolean, you must send "true" to get a dip
 
 The response will be in the form:
 
@@ -511,7 +511,7 @@ curl -X POST \
                 '"postal": "NW1 1AL",' \
                 '"town": "London"' \
             '}',
-            '"privacy_policy_accepted": "true",'
+            '"is_privacy_policy_accepted": "true",'
        '}'
 ```
 
@@ -556,7 +556,7 @@ You will need to provide the following parameters:
     - `sub_building_name` The sub-building name
     - `postal` The post code
     - `town` The town
-- `privacy_policy_accepted` A boolean, you must send "true" to create a new applicant
+- `is_privacy_policy_accepted` A boolean, you must send "true" to create a new applicant
 
 
 ## Partial update an applicant
