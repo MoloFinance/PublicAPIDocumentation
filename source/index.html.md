@@ -198,8 +198,8 @@ curl -X POST \
 
 You will need to provide the following parameters:
 
-- `property_value` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
-- `monthly_rent` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `property_value` Optional. A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `monthly_rent` Optional. A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
 - `desired_loan_amount` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
 - `loan_term` An integer number of years.
 - `mortgage_type` The type of mortgage the customer wants. A choice of:
@@ -234,8 +234,8 @@ curl -X PATCH \
 
 You may send any combination of the following parameters:
 
-- `property_value` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
-- `monthly_rent` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `property_value` Optional. A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `monthly_rent` Optional. A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
 - `desired_loan_amount` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
 - `loan_term` An integer number of years.
 - `mortgage_type` The type of mortgage the customer wants. A choice of:
@@ -327,7 +327,7 @@ curl -X GET \
 [https://partner.molofinance.com/api/v1/applications/{pk}/](https://partner.molofinance.com/api/v1/applications/{pk}/)
 
 
-## Get a decision in principal
+## Get a decision in principle
 
 ```shell
 curl -X POST \
@@ -349,7 +349,7 @@ curl -X POST \
 }
 ```
 
-**Send a `POST` request to our applications dip endpoint to get a decision in principal.**
+**Send a `POST` request to our applications dip endpoint to get a decision in principle.**
 
 [https://partner.molofinance.com/api/v1/applications/{pk}/get-dip/](https://partner.molofinance.com/api/v1/applications/{pk}/get-dip/)
 
@@ -359,7 +359,7 @@ You must send the parameter:
 
 The response will be in the form:
 
-- `dip_agreed` Whether Molo can give you a decision in principal. A boolean.
+- `dip_agreed` Whether Molo can give you a decision in principle. A boolean.
 - `link_to_dip` A link to the DIP itself so that it can be downloaded.
 
 
@@ -479,6 +479,29 @@ curl -X POST \
 }
 ```
 
+**Send a `POST` request to our max loan calculation endpoint to retrieve a maximum loand calculation.**
+
+[https://partner.molofinance.com/api/v1/applications/calculate_max_loan/](https://partner.molofinance.com/api/v1/applications/calculate_max_loan/)
+
+You may send any combination of the following parameters:
+
+- `is_new_property` Optional, A boolean
+- `is_hmo` Optional, A boolean
+- `is_ex_local` Optional, A boolean
+- `borrower_type` The type of borrower, a choice of:
+    - "individual_borrower"
+    - "ltd_company"
+- `mortgage_type` The type of mortgage the customer wants. A choice of:
+    - "new_purchase"
+    - "remortgage_current"
+    - "remortgage_and_borrow"
+- `property_value`  A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP. Validated to be between £1 and £4,000,000
+- `estimated_rent_per_month` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP. Validated to be between £1 and £999,999,999.
+- `taxable_income` Optional. A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP. Validated to be between £30,000 and £999,999,999.
+
+The response will be in the form:
+
+- `max_loan` The maximum loan Molo will make based on the provided criteria.
 
 
 # Applicant
@@ -544,9 +567,9 @@ You will need to provide the following parameters:
     - "lady"
     - "lord"
     - "other"
-- `first_name` The customer's first name
-- `middle_name` The customer's middle name
-- `last_name` The customer's last name
+- `first_name` Optional. The customer's first name
+- `middle_name` Optional. The customer's middle name
+- `last_name` Optional. The customer's last name
 - `date_of_birth` The customer's date of birth, in ISO 8601 format (yyyy-mm-dd)
 - `mobile` The customer's mobile number in the form "+441615676878"
 - `address` An address object representing the customer's current address, in the form:
