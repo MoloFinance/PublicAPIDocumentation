@@ -181,6 +181,7 @@ curl -X POST \
            '"desired_loan_amount": 130000,' \
            '"monthly_rent": 2000,' \
            '"property_value": 200000'
+           '"reference_id": "custome_reference_id"' 
        '}'
 ```
 
@@ -209,7 +210,7 @@ You will need to provide the following parameters:
 - `borrower_type` The type of borrower, a choice of:
     - "individual_borrower"
     - "ltd_company"
-
+- `reference_id` Optional. A lead reference id. 
 
 ## Update an application
 
@@ -245,6 +246,7 @@ You may send any combination of the following parameters:
 - `borrower_type` The type of borrower, a choice of:
     - "individual_borrower"
     - "ltd_company"
+- `reference_id` Optional. A lead reference id.
 
 
 ## Retrieve a list of applications
@@ -288,6 +290,25 @@ curl -X GET \
 
 [https://partner.molofinance.com/api/v1/applications/](https://partner.molofinance.com/api/v1/applications/)
 
+You will get list of applications with next parameters:
+
+- `id` Application identifier.
+- `status` Application status. A choice of:
+    - `stored` - default 
+    - `pending_decision`
+    - `valid` - DIP valid
+    - `denied_dip` - Denied DIP
+    - `denied_dip_kyc` - Denied DIP because of failed KYC.           
+- `mortgage_type` The type of mortgage the customer wants. A choice of:
+    - "new_purchase"
+    - "remortgage_current"
+    - "remortgage_and_borrow"
+- `borrower_type` The type of borrower, a choice of:
+    - "individual_borrower"
+    - "ltd_company"
+- `created_by` Account id which create application. 
+- `created_at` Date when application was created.
+- `updated_at` Lase application update date.
 
 ## Retrieve details of a specific application
 
@@ -315,6 +336,8 @@ curl -X GET \
     "property_value": 110000.0,
     "monthly_rent": 1100.0,
     "loan_term": 5,
+    "reference_id": "1106683832, 281da6a4-8748-abc3-9b20-5a1d789e340d",
+    "dip_pdf": "",
     "applicants": [
         3548,
         3542
@@ -326,6 +349,32 @@ curl -X GET \
 
 [https://partner.molofinance.com/api/v1/applications/{pk}/](https://partner.molofinance.com/api/v1/applications/{pk}/)
 
+You will get detail application response with next parameters:
+
+- `id` Application identifier.
+- `status` Application status. A choice of:
+    - `stored` - default 
+    - `pending_decision`
+    - `valid` - DIP valid
+    - `denied_dip` - Denied DIP
+    - `denied_dip_kyc` - Denied DIP because of failed KYC.           
+- `property_value` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `monthly_rent` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `desired_loan_amount` A decimal value. Up to 11 digits long, including 2 decimal places. This value is presumed to be in GBP.
+- `loan_term` An integer number of years.
+- `mortgage_type` The type of mortgage the customer wants. A choice of:
+    - "new_purchase"
+    - "remortgage_current"
+    - "remortgage_and_borrow"
+- `borrower_type` The type of borrower, a choice of:
+    - "individual_borrower"
+    - "ltd_company"
+- `applicants` List of applicants id. More info about [Applicant](#applicant).
+- `dip_pdf` Pdf document in **base64** format when [dip](#get-a-decision-in-principle) is `valid` or empty string.
+- `created_by` Account id which create application. 
+- `created_at` Date when application was created.
+- `updated_at` Lase application update date.
+- `reference_id` A lead reference id.
 
 ## Get a decision in principle
 
@@ -359,8 +408,10 @@ You must send the parameter:
 
 The response will be in the form:
 
-- `dip_agreed` Whether Molo can give you a decision in principle. A boolean.
-- `link_to_dip` A link to the DIP itself so that it can be downloaded.
+- `decision` Whether Molo can give you a decision in principle. A choice of:
+    - "valid" 
+    - "denied_dip"
+    - "denied_dip_kyc"
 
 
 ## Get relevant products
