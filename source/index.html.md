@@ -414,7 +414,7 @@ The response will be in the form:
     - "denied_dip_kyc"
 
 
-## Get relevant products
+<!-- ## Get relevant products
 
 ```shell
 curl -X GET \
@@ -501,7 +501,7 @@ The response will be in the form:
 - `fourth_year_early_repayment_fee`
 - `fifth_year_early_repayment_fee`
 - `mortgage_exit_administration_fee`
-
+ -->
 
 ## Get a max loan calculation
 
